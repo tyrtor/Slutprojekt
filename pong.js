@@ -19,7 +19,7 @@ class Boll {
     rita() {
         ctx.strokeStyle = "white";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 100, 0, 2 * Math.PI);
+        ctx.arc(this.x, this.y, 200, 0, 2 * Math.PI);
         ctx.stroke();
     }
 }
@@ -79,7 +79,7 @@ class Racketen {
         ctx.fill();
     }
 }
-
+/* skapa en variabel för classen */
 var racketen = new Racketen();
 
 /* Spelloopen */
