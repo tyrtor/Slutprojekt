@@ -13,14 +13,16 @@ class Boll {
     constructor(){
         this.x = eCanvas.width / 2,
         this.y = eCanvas.height / 2,
-        this.dy = 0,
-        this.dx = 0
+        this.dy = 1,
+        this.dx = 1,
+        this.radie = 12
+        
     }
     rita() {
-        ctx.strokeStyle = "white";
+        ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 200, 0, 2 * Math.PI);
-        ctx.stroke();
+        ctx.arc(this.x, this.y, this.radie, 0, Math.PI * 2);
+        ctx.fill();
     }
 }
 /* skapa variabel för classen */
@@ -30,7 +32,8 @@ var boll = new Boll();
 class Bakgrund {
     constructor(){
         this.startX = eCanvas.width - 800,
-        this.startY = eCanvas.height - 600
+        this.startY = eCanvas.height - 600,
+        this.x = eCanvas.width / 2
     }
     rita() {
         /* skapa  ett svart bord */
@@ -41,7 +44,7 @@ class Bakgrund {
 
         /* skapa en mittplan/pingisnät */
         ctx.beginPath();
-        ctx.rect(boll.x, 5, 10, 590);
+        ctx.rect(this.x, 5, 10, 590);
         ctx.fillStyle = "green";
         ctx.fill();
 
@@ -59,11 +62,15 @@ class Racketen {
     constructor() {
         /* variabler för det vänstra */
         this.vx = 10,
-        this.vy = eCanvas.height / 2
+        this.vy = eCanvas.height / 2,
+        this.vupp = false,
+        this.vned = false
 
         /* variabler för det högra */
         this.hx = 780,
         this.hy = eCanvas.height / 2
+        this.hupp = false,
+        this.hned = false
     }
     rita() {
         /* skapa ett racket till vänstra sidan */
@@ -84,9 +91,11 @@ var racketen = new Racketen();
 
 /* Spelloopen */
 function gameLoop() {
-    boll.rita();
     bakgrund.rita();
     racketen.rita();
+    boll.rita();
+
+    rörselseBoll();
 
     requestAnimationFrame(gameLoop);
 
@@ -94,3 +103,38 @@ function gameLoop() {
 
 /* kör spelet */
 gameLoop();
+
+/* skapa en funktion för att få bollen att röra på sig */
+function rörselseBoll() {
+    boll.x += boll.dx;
+    boll.y += boll.dy;
+}
+
+/* röra på racketen */
+window.addEventListener("keydown", function (e) {
+    switch (e.key) {
+        case "ArrowUp":
+            racketen.hupp = true;
+            console.log(e.key);
+            break;
+        case "ArrowDown":
+            racketen.hned = true;
+            console.log(e.key);
+            break;
+        case "87":
+            racketen.vupp = true;
+            console.log(e.key);
+            break;
+        case "83":
+            racketen.vned = true;
+            console.log(e.key);
+            break;
+    }
+})
+
+
+function animate() {
+    if (racketen.hned) {
+        racketen.hy += 3;
+    }
+}
