@@ -10,13 +10,13 @@ var ctx = eCanvas.getContext("2d");
 
 /* skapa en klass för bollen */
 class Boll {
-    constructor(){
+    constructor() {
         this.x = eCanvas.width / 2,
-        this.y = eCanvas.height / 2,
-        this.dy = 1,
-        this.dx = 1,
-        this.radie = 12
-        
+            this.y = eCanvas.height / 2,
+            this.dy = -5,
+            this.dx = 0,
+            this.radie = 12
+
     }
     rita() {
         ctx.fillStyle = "white";
@@ -30,15 +30,15 @@ var boll = new Boll();
 
 /* skapa en class för bordet/bakgrunden */
 class Bakgrund {
-    constructor(){
+    constructor() {
         this.startX = eCanvas.width - 800,
-        this.startY = eCanvas.height - 600,
-        this.x = eCanvas.width / 2
+            this.startY = eCanvas.height - 600,
+            this.x = eCanvas.width / 2
     }
     rita() {
         /* skapa  ett svart bord */
         ctx.beginPath();
-        ctx.rect(this.startX, this.startY, 800, 600,);
+        ctx.rect(this.startX, this.startY, 800, 600, );
         ctx.fillStyle = "black";
         ctx.fill();
 
@@ -61,16 +61,18 @@ var bakgrund = new Bakgrund();
 class Racketen {
     constructor() {
         /* variabler för det vänstra */
-        this.vx = 10,
-        this.vy = eCanvas.height / 2,
-        this.vupp = false,
-        this.vned = false
+            this.vx = 10,
+            this.vy = eCanvas.height / 2,
+            this.vupp = false,
+            this.vned = false,
+            this.vhojd = 100
 
         /* variabler för det högra */
-        this.hx = 780,
-        this.hy = eCanvas.height / 2
-        this.hupp = false,
-        this.hned = false
+            this.hx = 780,
+            this.hy = eCanvas.height / 2
+            this.hupp = false,
+            this.hned = false,
+            this.hhojd = 100
     }
     rita() {
         /* skapa ett racket till vänstra sidan */
@@ -94,6 +96,7 @@ function gameLoop() {
     bakgrund.rita();
     racketen.rita();
     boll.rita();
+    animate();
 
     rörselseBoll();
 
@@ -111,7 +114,7 @@ function rörselseBoll() {
 }
 
 /* röra på racketen */
-window.addEventListener("keydown", function (e) {
+window.addEventListener("keydown", function(e) {
     switch (e.key) {
         case "ArrowUp":
             racketen.hupp = true;
@@ -121,6 +124,27 @@ window.addEventListener("keydown", function (e) {
             racketen.hned = true;
             console.log(e.key);
             break;
+    }
+})
+window.addEventListener("keyup", function(e) {
+    switch (e.key) {
+        case "ArrowUp":
+            racketen.hupp = false;
+            break;
+        case "ArrowDown":
+            racketen.hned = false;
+            break;
+        case "KeyW":
+            racketen.vupp = false;
+            break;
+        case "KeyS":
+            racketen.vned = false;
+            break;
+    }
+})
+
+window.addEventListener("keydown", function(e) {
+    switch (e.key) {
         case "87":
             racketen.vupp = true;
             console.log(e.key);
@@ -132,9 +156,17 @@ window.addEventListener("keydown", function (e) {
     }
 })
 
-
 function animate() {
-    if (racketen.hned) {
-        racketen.hy += 3;
+    if (boll.y <= 15) {
+        boll.dy = -boll.dy
+    }
+    if (boll.y > 600) {
+        boll.dy = +boll.dy
+    }
+    if (racketen.hupp == true) {
+        racketen.hy --;
+    }
+    if (racketen.hned == true) {
+        racketen.hy ++;
     }
 }
