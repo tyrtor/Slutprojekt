@@ -65,25 +65,27 @@ class Racketen {
             this.vy = eCanvas.height / 2,
             this.vupp = false,
             this.vned = false,
-            this.vhojd = 100
+            this.vhojd = 100,
+            this.vbredd = 10
 
         /* variabler för det högra */
             this.hx = 780,
             this.hy = eCanvas.height / 2
             this.hupp = false,
             this.hned = false,
-            this.hhojd = 100
+            this.hhojd = 100,
+            this.hbredd = 10
     }
     rita() {
         /* skapa ett racket till vänstra sidan */
         ctx.beginPath();
-        ctx.rect(this.vx, this.vy - 50, 10, 100);
+        ctx.rect(this.vx, this.vy - 50, this.vbredd, this.vhojd);
         ctx.fillStyle = "white";
         ctx.fill();
 
         /* skapa ett racket till högra sidan */
         ctx.beginPath();
-        ctx.rect(this.hx, this.hy - 50, 10, 100);
+        ctx.rect(this.hx, this.hy - 50, this.hbredd, this.hhojd);
         ctx.fillStyle = "white";
         ctx.fill();
     }
@@ -152,10 +154,10 @@ window.addEventListener("keydown", function(e) {
 /* vänstra racketen */
 window.addEventListener("keyup", function (e) {
     switch (e.key) {
-        case 87:
+        case "w":
             racketen.vupp = false;
             break;
-        case 83:
+        case "s":
             racketen.vned = false;
             break;
     }
@@ -163,11 +165,11 @@ window.addEventListener("keyup", function (e) {
 
 window.addEventListener("keydown", function(e) {
     switch (e.key) {
-        case 87:
+        case "w":
             racketen.vupp = true;
             console.log(e.key);
             break;
-        case 83:
+        case "s":
             racketen.vned = true;
             console.log(e.key);
             break;
@@ -200,16 +202,16 @@ function animate() {
 
 
 function kollision() {
-    if ((racketen.hy <= boll.y) && (boll.y <= racketen.hy)) {
-        if (boll.x  + boll.radie >= racketen.hx) {
+    if ((racketen.hy <= boll.y) && (boll.y <= (racketen.hy+racketen.hhojd))) {
+        if ((boll.x  + boll.radie) >= racketen.hx + racketen.hbredd) {
             boll.dx = -boll.dx;
             poäng.h ++;
             
         }
     }
 
-    if ((racketen.vy <= boll.y) && (boll.y <= racketen.vy)) {
-        if (boll.x - boll.radie <= racketen.vx) {
+    if ((racketen.vy <= boll.y) && (boll.y <= (racketen.vy+racketen.vhojd))) {
+        if ((boll.x  - boll.radie) <= racketen.vx + racketen.vbredd) {
             boll.dx = -boll.dx;
             poäng.v ++;
             console.log(poäng.v);
