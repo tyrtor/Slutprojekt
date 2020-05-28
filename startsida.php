@@ -1,5 +1,9 @@
 
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 /**
 * PHP version 7
 * @category   Spelforumet
@@ -21,20 +25,22 @@ include_once "./konfig-db.php";
     <div class="kontainer">
         <canvas></canvas>
         <div>
-            <form method="POST">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
                 <label for="namn">Namn</label>
-                <input name="namn" type="text">
+                <input name="namn" type="text" required>
     
                 <label for="rubrik">Rubrik</label>
-                <input name="rubrik" type="text">
+                <input name="rubrik" type="text" required>
     
                 <label for="inlägg">Inlägg</label>
-                <input name="inlägg" type="text">
+                <input name="inlägg" type="text" required>
     
                 <button>Skicka</button>
             </form>
+            <!-- importera till databasen -->
             <?php
                 $inlagg = filter_input(INPUT_POST, 'inlägg', FILTER_SANITIZE_STRING);
+                $namn = filter_input(INPUT_POST, 'namn', FILTER_SANITIZE_STRING);
                 $rubrik = filter_input(INPUT_POST, 'rubrik', FILTER_SANITIZE_STRING);
 
                 /* logga in på mysql-servern och välj databas */
@@ -45,20 +51,49 @@ include_once "./konfig-db.php";
                     die("Kunde inte ansluta till databasen: " . $conn->connect_error);
                 }
 
-                /* SQL??? */
-                $sql = "INSERT INTO spelforumet set inlägg='$inlagg', rubrik='$rubrik'";
+                if ($namn && $inlagg && $namn) {
 
-                /* kör sql fråga */
+                    $datum = date("Y/m/d");
+
+                    /* SQL??? */
+                    $sql = "INSERT INTO spelforumet (id, inlägg, namn, datum, rubrik) VALUES (NULL, '$inlagg', '$namn', '$datum', '$rubrik');";
+
+                    /* kör sql fråga */
+                    $resultat = $conn->query($sql);
+
+                    /* gick det bra */
+                    if (!$resultat) {
+                        die("Det gick åt piparn");
+                    } else {
+                        echo"<p>inlägget har sparats</p>";
+                    }
+                    
+
+                }else {
+                    echo "<p>Fyll i alla rutor</p>";
+                }
+            
+                /* läsa av det som står i databasen */
+            
+
+                /* Gick det att ansluta? */
+                if ($conn->connect_error) {
+                    die("Kunde inte ansluta till databasen: " . $conn->connect_error);
+                }
+
+                /* SQL??? */
+                $sql = "SELECT * FROM spelforumet";
                 $resultat = $conn->query($sql);
 
-                if ($resultat) {
-
-                    /* returnera id på registrerade posten i tabellen */
-                    return $conn->insert_id;
+                foreach ($rad as $rader) {
+                    echo"<div>";
+                    echo"<p>$inlägg</p>";
+                    echo"</div>";
                 }
 
                 /* stäng ner anslutingnen */
                 $conn->close();
+            
             ?>
         </div>
     </div>
